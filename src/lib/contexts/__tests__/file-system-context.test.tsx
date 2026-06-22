@@ -3,11 +3,6 @@ import { renderHook, act, cleanup } from "@testing-library/react";
 import { FileSystemProvider, useFileSystem } from "../file-system-context";
 import { VirtualFileSystem } from "@/lib/file-system";
 
-// Mock the VirtualFileSystem
-vi.mock("@/lib/file-system", () => ({
-  VirtualFileSystem: vi.fn(),
-}));
-
 const mockFileSystem = {
   createFile: vi.fn(),
   updateFile: vi.fn(),
@@ -20,11 +15,31 @@ const mockFileSystem = {
   insertInFile: vi.fn(),
   getNode: vi.fn(),
   serialize: vi.fn(() => ({})),
+  deserializeFromNodes: vi.fn(),
+  reset: vi.fn(),
 };
+
+// Mock the VirtualFileSystem
+vi.mock("@/lib/file-system", () => ({
+  VirtualFileSystem: class {
+    createFile = mockFileSystem.createFile;
+    updateFile = mockFileSystem.updateFile;
+    deleteFile = mockFileSystem.deleteFile;
+    rename = mockFileSystem.rename;
+    readFile = mockFileSystem.readFile;
+    getAllFiles = mockFileSystem.getAllFiles;
+    createFileWithParents = mockFileSystem.createFileWithParents;
+    replaceInFile = mockFileSystem.replaceInFile;
+    insertInFile = mockFileSystem.insertInFile;
+    getNode = mockFileSystem.getNode;
+    serialize = mockFileSystem.serialize;
+    deserializeFromNodes = mockFileSystem.deserializeFromNodes;
+    reset = mockFileSystem.reset;
+  },
+}));
 
 beforeEach(() => {
   vi.clearAllMocks();
-  (VirtualFileSystem as any).mockImplementation(() => mockFileSystem);
   mockFileSystem.getAllFiles.mockReturnValue(new Map());
 });
 

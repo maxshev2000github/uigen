@@ -4,3 +4,5 @@ node_modules/
 .next/
 prisma/dev.db
 src/generated/
+.playwright-mcp/
+tsconfig.tsbuildinfo
